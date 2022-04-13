@@ -2,7 +2,7 @@
 
 // Smart contract that lets anyone deposit ETH into the contract
 // Only the owner of the contract can withdraw the ETH
-pragma solidity >=0.6.6 <0.9.0;
+pragma solidity ^0.6.6;
 
 // Get the latest ETH/USD price from chainlink price feed
 import "@chainlink/contracts/src/v0.6/interfaces/AggregatorV3Interface.sol";
@@ -18,10 +18,12 @@ contract FundMe {
     address[] public funders;
     //address of the owner (who deployed the contract)
     address public owner;
+    AggregatorV3Interface public priceFeed;
     
     // the first person to deploy the contract is
     // the owner
-    constructor() public {
+    constructor(address _priceFeedAddress) public {
+        priceFeed = AggregatorV3Interface(_priceFeedAddress);
         owner = msg.sender;
     }
     
@@ -37,12 +39,12 @@ contract FundMe {
     
     //function to get the version of the chainlink pricefeed
     function getVersion() public view returns (uint256){
-        AggregatorV3Interface priceFeed = AggregatorV3Interface(0x8A753747A1Fa494EC906cE90E9f37563A8AF630e);
+        // AggregatorV3Interface priceFeed = AggregatorV3Interface(0x8A753747A1Fa494EC906cE90E9f37563A8AF630e);
         return priceFeed.version();
     }
     
     function getPrice() public view returns(uint256){
-        AggregatorV3Interface priceFeed = AggregatorV3Interface(0x8A753747A1Fa494EC906cE90E9f37563A8AF630e);
+        // AggregatorV3Interface priceFeed = AggregatorV3Interface(0x8A753747A1Fa494EC906cE90E9f37563A8AF630e);
         (,int256 answer,,,) = priceFeed.latestRoundData();
          // ETH/USD rate in 18 digit 
          return uint256(answer * 10000000000);
